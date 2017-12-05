@@ -4,14 +4,14 @@ Class {
 	#category : #BaselineOfTwitter
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #baselines }
 BaselineOfTwitter >> baseline: spec [
 	<baseline>
 
 	spec for: #common do: [
 		self zincSSO: spec.
 		spec package: 'Twitter' with: [ 
-			spec requires: #('ZincSSO') ] ]
+			spec requires: #('ZincHTTPComponents') ] ]
 
 ]
 
@@ -22,5 +22,5 @@ BaselineOfTwitter >> zincSSO: spec [
 		with: [ 
 			spec
 				loads: #('SSO');
-				repository: 'http://smalltalkhub.com/mc/Phari/MetaRepoForPharo60/main' ]
+				repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
 ]
