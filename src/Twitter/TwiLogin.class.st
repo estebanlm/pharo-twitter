@@ -40,15 +40,19 @@ TwiLogin >> accessToken: anObject [
 ]
 
 { #category : #'private requesting' }
-TwiLogin >> addAuthorizationTo: aRequest [
-	| calculator |
+TwiLogin >> executeRequest: requestMethod url: anUrl with: aBlock [
+	| request |
 	
-	calculator := self service providerAccount newCalculator.
-	calculator 
-		token: self accessToken value;
-		tokenSecret: self accessToken secret.
-	
-	aRequest setAuthorization: (calculator getAuthorizationHeader: aRequest)
+	request := ZnClient new
+		url: anUrl;
+		in: aBlock;
+		method: requestMethod;
+		prepareRequest;
+		request.
+		
+	^ self service 
+		executeRequest: request 
+		token: self accessToken	
 ]
 
 { #category : #'private requesting' }
@@ -58,13 +62,10 @@ TwiLogin >> get: anUrl [
 
 { #category : #'private requesting' }
 TwiLogin >> get: anUrl with: aBlock [
-	^ ZnClient new
-		url: anUrl;
-		in: aBlock;
-		method: #GET;
-		in: [ :aClient | self addAuthorizationTo: aClient request ];
-		execute;
-		response
+	^ self 
+		executeRequest: #GET  
+		url: anUrl  
+		with: aBlock
 ]
 
 { #category : #initialization }
