@@ -4,12 +4,13 @@ Class {
 	#instVars : [
 		'userAccess',
 		'service',
-		'accessToken'
+		'accessToken',
+		'url'
 	],
 	#category : #Twitter
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 TwiLogin class >> consumerKey: consumerKey consumerSecret: consumerSecret accessToken: aToken accessTokenSecret: aTokenSecret [
 	^ super new 
 		initializeConsumerKey: consumerKey 
@@ -24,13 +25,46 @@ TwiLogin class >> new [
 ]
 
 { #category : #accessing }
+TwiLogin class >> twitterUrl [
+	^ 'https://api.twitter.com/1.1' asZnUrl
+]
+
+{ #category : #'private accessing' }
 TwiLogin >> accessToken [
 	^ accessToken
 ]
 
-{ #category : #accessing }
+{ #category : #'private accessing' }
 TwiLogin >> accessToken: anObject [
 	accessToken := anObject
+]
+
+{ #category : #'private requesting' }
+TwiLogin >> addAuthorizationTo: aRequest [
+	| calculator |
+	
+	calculator := self service providerAccount newCalculator.
+	calculator 
+		token: self accessToken value;
+		tokenSecret: self accessToken secret.
+	
+	aRequest setAuthorization: (calculator getAuthorizationHeader: aRequest)
+]
+
+{ #category : #'private requesting' }
+TwiLogin >> get: anUrl [
+	^ self get: anUrl with: [ :request | ]
+]
+
+{ #category : #'private requesting' }
+TwiLogin >> get: anUrl with: aBlock [
+	^ ZnClient new
+		url: anUrl;
+		in: aBlock;
+		method: #GET;
+		in: [ :aClient | self addAuthorizationTo: aClient request ];
+		execute;
+		response
 ]
 
 { #category : #initialization }
@@ -56,27 +90,38 @@ TwiLogin >> initializeConsumerKey: consumerKey consumerSecret: consumerSecret ac
 		accessToken: newAccessToken
 ]
 
-{ #category : #accessing }
+{ #category : #'private accessing' }
 TwiLogin >> service [
 	^ service
 ]
 
-{ #category : #accessing }
+{ #category : #'private accessing' }
 TwiLogin >> service: anObject [
 	service := anObject
 ]
 
 { #category : #api }
-TwiLogin >> timeline [
+TwiLogin >> timelineHome [
+	^ self get: self urlStatuses / 'home_timeline.json'
 	
 ]
 
 { #category : #accessing }
+TwiLogin >> url [ 
+	^ url ifNil: [ url := self class twitterUrl ]
+]
+
+{ #category : #accessing }
+TwiLogin >> urlStatuses [
+	^ self url / 'statuses'
+]
+
+{ #category : #'private accessing' }
 TwiLogin >> userAccess [
 	^ userAccess
 ]
 
-{ #category : #accessing }
+{ #category : #'private accessing' }
 TwiLogin >> userAccess: anObject [
 	userAccess := anObject
 ]
