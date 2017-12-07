@@ -49,9 +49,10 @@ TwiLogin >> executeRequest: requestMethod url: anUrl with: aBlock [
 		in: aBlock;
 		request.
 	"now I use oath service to send the real request"
-	^ self service 
-		executeRequest: request 
-		token: self accessToken
+	^ self withResponseHandling: [ 
+		self service 
+			executeRequest: request 
+			token: self accessToken ]
 ]
 
 { #category : #'private requesting' }
@@ -61,10 +62,9 @@ TwiLogin >> get: anUrl [
 
 { #category : #'private requesting' }
 TwiLogin >> get: anUrl with: aBlock [
-	^ self 
-		executeRequest: #GET  
-		url: anUrl  
-		with: aBlock
+	^ STON fromString: (self 
+		rawGet: anUrl 
+		with: aBlock)
 ]
 
 { #category : #initialization }
@@ -86,6 +86,14 @@ TwiLogin >> initializeConsumerKey: consumerKey consumerSecret: consumerSecret ac
 
 ]
 
+{ #category : #'private requesting' }
+TwiLogin >> rawGet: anUrl with: aBlock [
+	^ self 
+		executeRequest: #GET  
+		url: anUrl  
+		with: aBlock
+]
+
 { #category : #'private accessing' }
 TwiLogin >> service [
 	^ service
@@ -93,9 +101,17 @@ TwiLogin >> service [
 
 { #category : #api }
 TwiLogin >> timelineHome [
-	^ self 
-		get: self urlStatuses / 'home_timeline.json'
-		with: [ :request | request queryAt: 'tweet_mode' put: 'extended' ]
+	^ TwiTimelineHome login: self
+]
+
+{ #category : #api }
+TwiLogin >> timelineUser [
+	^ TwiTimelineUser login: self
+]
+
+{ #category : #api }
+TwiLogin >> timelineUser: aName [
+	^ TwiTimelineUser login: self username: aName
 ]
 
 { #category : #accessing }
@@ -106,4 +122,14 @@ TwiLogin >> url [
 { #category : #accessing }
 TwiLogin >> urlStatuses [
 	^ self url / 'statuses'
+]
+
+{ #category : #'private requesting' }
+TwiLogin >> withResponseHandling: aBlock [
+	| response |
+	
+	response := aBlock value.
+	response isSuccess
+		ifFalse: [ TwiRequestError signalResponse: response ].
+	^ response contents
 ]
