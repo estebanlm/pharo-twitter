@@ -43,16 +43,15 @@ TwiLogin >> accessToken: anObject [
 TwiLogin >> executeRequest: requestMethod url: anUrl with: aBlock [
 	| request |
 	
+	"Use ZnClient just as a builder"
 	request := ZnClient new
-		url: anUrl;
+		request: (ZnRequest method: requestMethod url: anUrl);
 		in: aBlock;
-		method: requestMethod;
-		prepareRequest;
 		request.
-		
+	"now I use oath service to send the real request"
 	^ self service 
 		executeRequest: request 
-		token: self accessToken	
+		token: self accessToken
 ]
 
 { #category : #'private requesting' }
@@ -71,24 +70,20 @@ TwiLogin >> get: anUrl with: aBlock [
 { #category : #initialization }
 TwiLogin >> initializeConsumerKey: consumerKey consumerSecret: consumerSecret accessToken: aToken accessTokenSecret: aTokenSecret [
 	"Setup your app at https://apps.twitter.com/app/"
-	| consumerData accessTokenDict newUserAccess newService newAccessToken |
+	| consumerData accessTokenDict |
 
 	consumerData := ZnOAuth1ConsumerData newForTwitterAuthentication.
 	consumerData consumer: consumerKey.
 	consumerData consumerSecret: consumerSecret.
-	newService := ZnOAuth1Service new.
-	newService providerAccount: consumerData.
+	service := ZnOAuth1Service new.
+	service providerAccount: consumerData.
 	accessTokenDict := Dictionary new.
 	accessTokenDict at: 'oauth_token' put: aToken.
 	accessTokenDict at: 'oauth_token_secret' put: aTokenSecret.
-	newAccessToken := ZnOAuth1Token newFromDictionary: accessTokenDict.
-	newUserAccess := ZnOAuth1TwitterUserAccess new oauth1Service: newService.
-	newUserAccess accessToken: newAccessToken.
-	
-	self 
-		service: newService;
-		userAccess: newUserAccess;
-		accessToken: newAccessToken
+	accessToken := ZnOAuth1Token newFromDictionary: accessTokenDict.
+	userAccess := ZnOAuth1TwitterUserAccess new oauth1Service: service.
+	userAccess accessToken: accessToken.
+
 ]
 
 { #category : #'private accessing' }
@@ -96,15 +91,11 @@ TwiLogin >> service [
 	^ service
 ]
 
-{ #category : #'private accessing' }
-TwiLogin >> service: anObject [
-	service := anObject
-]
-
 { #category : #api }
 TwiLogin >> timelineHome [
-	^ self get: self urlStatuses / 'home_timeline.json'
-	
+	^ self 
+		get: self urlStatuses / 'home_timeline.json'
+		with: [ :request | request queryAt: 'tweet_mode' put: 'extended' ]
 ]
 
 { #category : #accessing }
@@ -115,14 +106,4 @@ TwiLogin >> url [
 { #category : #accessing }
 TwiLogin >> urlStatuses [
 	^ self url / 'statuses'
-]
-
-{ #category : #'private accessing' }
-TwiLogin >> userAccess [
-	^ userAccess
-]
-
-{ #category : #'private accessing' }
-TwiLogin >> userAccess: anObject [
-	userAccess := anObject
 ]
