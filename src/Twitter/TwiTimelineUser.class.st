@@ -8,7 +8,8 @@ Class {
 	#name : #TwiTimelineUser,
 	#superclass : #TwiTimeline,
 	#instVars : [
-		'username'
+		'username',
+		'includeRTs'
 	],
 	#category : #Twitter
 }
@@ -23,8 +24,25 @@ TwiTimelineUser class >> login: aLogin username: aName [
 
 { #category : #private }
 TwiTimelineUser >> addParametersToRequest: request [
+	request queryAt: 'include_rts' put: self includeRTs. 
 	self username 
 		ifNotNil: [ request queryAt: 'screen_name' put: self username ]
+]
+
+{ #category : #testing }
+TwiTimelineUser >> includeRTs [
+	^ includeRTs
+]
+
+{ #category : #accessing }
+TwiTimelineUser >> includeRTs: aBoolean [
+	includeRTs := true
+]
+
+{ #category : #initialization }
+TwiTimelineUser >> initialize [
+	super initialize.
+	includeRTs := false
 ]
 
 { #category : #accessing }

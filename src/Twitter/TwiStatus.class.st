@@ -56,13 +56,19 @@ TwiStatus >> filterLevel [
 	^ self jsonAt: 'filter_level'
 ]
 
+{ #category : #'accessing api' }
+TwiStatus >> fullText [
+	"undocumented?"
+	^ self jsonAt: 'full_text'
+]
+
 { #category : #gtinspector }
 TwiStatus >> gtInspectorStatusIn: composite [
-	"<gtInspectorPresentationOrder: 0>  
+	<gtInspectorPresentationOrder: 0>  
 	 
 	composite text
-		title: self account acct, ' at ', self createdAt asLocalStringYMDHM;
-		display: self content"
+		title: self user screenName, ' at ', self createdAt;
+		display: self fullText
 ]
 
 { #category : #'accessing api' }
