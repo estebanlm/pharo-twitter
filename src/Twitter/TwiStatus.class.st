@@ -63,11 +63,16 @@ TwiStatus >> fullText [
 ]
 
 { #category : #gtinspector }
+TwiStatus >> gtDisplayString [
+	^ self user screenName, ' at ', self createdAt
+]
+
+{ #category : #gtinspector }
 TwiStatus >> gtInspectorStatusIn: composite [
 	<gtInspectorPresentationOrder: 0>  
 	 
 	composite text
-		title: self user screenName, ' at ', self createdAt;
+		title: self gtDisplayString;
 		display: self fullText
 ]
 
