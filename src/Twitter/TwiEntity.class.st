@@ -1,3 +1,7 @@
+"
+I represent a twitter entity. 
+Entities are any kind of input/output that can traverse the twitter api.
+"
 Class {
 	#name : #TwiEntity,
 	#superclass : #Object,

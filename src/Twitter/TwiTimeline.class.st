@@ -21,7 +21,6 @@ TwiTimeline class >> login: aLogin [
 
 { #category : #private }
 TwiTimeline >> addParametersToRequest: request [
-		
 ]
 
 { #category : #initialization }
