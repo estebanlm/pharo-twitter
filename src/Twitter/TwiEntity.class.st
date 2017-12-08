@@ -42,6 +42,14 @@ TwiEntity >> jsonAt: aString ifAbsentPut: aBlock [
 ]
 
 { #category : #accessing }
+TwiEntity >> jsonAt: aString ifPresent: presentBlock ifAbsent: absentBlock [
+	^ self json 
+		at: aString
+		ifPresent: presentBlock
+		ifAbsent: absentBlock
+]
+
+{ #category : #accessing }
 TwiEntity >> jsonAt: aString put: anObject [
 	^ self json 
 		at: aString
