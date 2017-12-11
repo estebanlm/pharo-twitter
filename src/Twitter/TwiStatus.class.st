@@ -170,9 +170,13 @@ TwiStatus >> matchingRules [
 	^ self jsonAt: 'matching_rules'
 ]
 
-{ #category : #'accessing api' }
+{ #category : #'accessing api extension' }
 TwiStatus >> media [
-	^ self json at: 'extended_entities' at: 'media' 
+	^ (self json 
+		at: 'extended_entities' 
+		at: 'media' 
+		ifAbsent: [ ^ #() ])
+		collect: [ :each | TwiMedia json: each ]
 ]
 
 { #category : #'accessing api' }
@@ -239,6 +243,15 @@ TwiStatus >> source [
 TwiStatus >> text [
 	"The actual UTF-8 text of the status update. See twitter-text for details on what characters are currently considered valid."
 	^ self jsonAt: 'text'
+]
+
+{ #category : #'accessing api extension' }
+TwiStatus >> urls [
+	^ (self json 
+		at: 'extended_entities' 
+		at: 'urls'
+		ifAbsent: [ ^ #() ])
+		collect: [ :each | TwiUrl json: each ]
 ]
 
 { #category : #'accessing api' }

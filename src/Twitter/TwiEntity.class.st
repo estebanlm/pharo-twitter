@@ -28,7 +28,9 @@ TwiEntity >> json: anObject [
 
 { #category : #accessing }
 TwiEntity >> jsonAt: aString [
-	^ self json at: aString
+	^ self json 
+		at: aString
+		ifAbsent: [ nil ]
 ]
 
 { #category : #accessing }
