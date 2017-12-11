@@ -41,14 +41,20 @@ TwiTimeline >> login: anObject [
 
 { #category : #api }
 TwiTimeline >> next [
-	^ statuses := statuses, (self retrieveStatusesSince: (statuses 
+	^ self nextSinceId: (statuses 
 		ifNotEmpty: [ statuses last id ]
-		ifEmpty: [ nil ]))
+		ifEmpty: [ nil ])
+]
+
+{ #category : #api }
+TwiTimeline >> nextSinceId: anId [
+	^ statuses := statuses, (self retrieveStatusesSince: anId)
 ]
 
 { #category : #api }
 TwiTimeline >> restart [
 	statuses := #().
+	self sinceId: nil.
 	^ self next
 ]
 

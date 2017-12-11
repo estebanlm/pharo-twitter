@@ -5,7 +5,8 @@ Class {
 		'userAccess',
 		'service',
 		'accessToken',
-		'url'
+		'url',
+		'account'
 	],
 	#category : #Twitter
 }
@@ -37,6 +38,11 @@ TwiLogin >> accessToken [
 { #category : #'private accessing' }
 TwiLogin >> accessToken: anObject [
 	accessToken := anObject
+]
+
+{ #category : #accessing }
+TwiLogin >> account [
+	^ account ifNil: [ account := self verifyCredentials ]
 ]
 
 { #category : #'private requesting' }
@@ -120,8 +126,20 @@ TwiLogin >> url [
 ]
 
 { #category : #accessing }
-TwiLogin >> urlStatuses [
+TwiLogin >> urlApiAccount [
+	^ self url / 'account'
+]
+
+{ #category : #accessing }
+TwiLogin >> urlApiStatuses [
 	^ self url / 'statuses'
+]
+
+{ #category : #api }
+TwiLogin >> verifyCredentials [
+	^ TwiUser json: (self 
+		get: self urlApiAccount / 'verify_credentials.json'
+		with: [ :request | request queryAt: 'include_entities' put: false ])
 ]
 
 { #category : #'private requesting' }

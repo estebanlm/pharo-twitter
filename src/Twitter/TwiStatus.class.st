@@ -29,7 +29,7 @@ TwiStatus >> coordinates [
 { #category : #'accessing api' }
 TwiStatus >> createdAt [
 	"UTC time when this Tweet was created"
-	^ self jsonAt: 'created_at'
+	^ DateAndTime fromTwitterString: (self jsonAt: 'created_at')
 ]
 
 { #category : #'accessing api' }
@@ -64,7 +64,7 @@ TwiStatus >> fullText [
 
 { #category : #gtinspector }
 TwiStatus >> gtDisplayString [
-	^ self user screenName, ' at ', self createdAt
+	^ self user screenName, ' at ', self createdAt asString
 ]
 
 { #category : #gtinspector }
@@ -168,6 +168,11 @@ TwiStatus >> login: anObject [
 TwiStatus >> matchingRules [
 	"Present in filtered products such as Twitter Search and PowerTrack. Provides the id and tag associated with the rule that matched the Tweet. With PowerTrack, more than one rule can match a Tweet."
 	^ self jsonAt: 'matching_rules'
+]
+
+{ #category : #'accessing api' }
+TwiStatus >> media [
+	^ self json at: 'extended_entities' at: 'media' 
 ]
 
 { #category : #'accessing api' }

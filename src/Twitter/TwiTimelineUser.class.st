@@ -47,7 +47,7 @@ TwiTimelineUser >> initialize [
 
 { #category : #accessing }
 TwiTimelineUser >> url [
-	^ self login urlStatuses / 'user_timeline.json'
+	^ self login urlApiStatuses / 'user_timeline.json'
 ]
 
 { #category : #accessing }

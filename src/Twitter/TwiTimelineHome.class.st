@@ -12,5 +12,5 @@ Class {
 
 { #category : #accessing }
 TwiTimelineHome >> url [
-	^ self login urlStatuses / 'home_timeline.json'
+	^ self login urlApiStatuses / 'home_timeline.json'
 ]

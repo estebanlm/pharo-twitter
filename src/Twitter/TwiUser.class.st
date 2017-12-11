@@ -10,7 +10,7 @@ Class {
 { #category : #'accessing api' }
 TwiUser >> createdAt [
 	"The UTC datetime that the user account was created on Twitter. "
-	^ self jsonAt: 'created_at'
+	^ DateAndTime fromTwitterString: (self jsonAt: 'created_at')
 ]
 
 { #category : #'accessing api' }
