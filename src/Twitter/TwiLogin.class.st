@@ -53,6 +53,7 @@ TwiLogin >> executeRequest: requestMethod url: anUrl with: aBlock [
 	request := ZnClient new
 		request: (ZnRequest method: requestMethod url: anUrl);
 		in: aBlock;
+		beOneShot;
 		request.
 	"now I use oath service to send the real request"
 	^ self withResponseHandling: [ 
