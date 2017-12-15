@@ -1,3 +1,18 @@
+"
+I represent a login (a connection) to twitter.
+I'm the most important object of this framework, since I provide access to all the rest. 
+
+You create an instance of me as this: 
+
+TwiLogin 
+	consumerKey: 'CONSUMER_KEY'
+	consumerSecret: 'CONSUMER_SECRET'
+	accessToken: 'ACCESS_TOKEN'
+	accessTokenSecret: 'ACCESS_TOKEN_SECRET'
+	
+you can obtain all this data  by registering an application at https://apps.twitter.com
+
+"
 Class {
 	#name : #TwiLogin,
 	#superclass : #Object,
@@ -28,6 +43,11 @@ TwiLogin class >> new [
 { #category : #accessing }
 TwiLogin class >> twitterUrl [
 	^ 'https://api.twitter.com/1.1' asZnUrl
+]
+
+{ #category : #accessing }
+TwiLogin class >> uploadUrl [
+	^ 'https://upload.twitter.com/1.1' asZnUrl
 ]
 
 { #category : #'private accessing' }
@@ -94,9 +114,31 @@ TwiLogin >> initializeConsumerKey: consumerKey consumerSecret: consumerSecret ac
 ]
 
 { #category : #'private requesting' }
+TwiLogin >> post: anUrl with: aBlock [
+	^ STON fromString: (self 
+		rawPost: anUrl 
+		with: aBlock)
+]
+
+{ #category : #api }
+TwiLogin >> postStatus: aStringOrPostStatus [
+	^ aStringOrPostStatus asTwitterPostStatus
+		login: self;
+		post
+]
+
+{ #category : #'private requesting' }
 TwiLogin >> rawGet: anUrl with: aBlock [
 	^ self 
 		executeRequest: #GET  
+		url: anUrl  
+		with: aBlock
+]
+
+{ #category : #'private requesting' }
+TwiLogin >> rawPost: anUrl with: aBlock [
+	^ self 
+		executeRequest: #POST  
 		url: anUrl  
 		with: aBlock
 ]
@@ -122,6 +164,11 @@ TwiLogin >> timelineUser: aName [
 ]
 
 { #category : #accessing }
+TwiLogin >> uploadUrl [ 
+	^ self class uploadUrl
+]
+
+{ #category : #accessing }
 TwiLogin >> url [ 
 	^ url ifNil: [ url := self class twitterUrl ]
 ]
@@ -132,8 +179,18 @@ TwiLogin >> urlApiAccount [
 ]
 
 { #category : #accessing }
+TwiLogin >> urlApiMedia [
+	^ self url / 'media'
+]
+
+{ #category : #accessing }
 TwiLogin >> urlApiStatuses [
 	^ self url / 'statuses'
+]
+
+{ #category : #accessing }
+TwiLogin >> urlApiUploadMedia [
+	^ self uploadUrl / 'media'
 ]
 
 { #category : #api }
