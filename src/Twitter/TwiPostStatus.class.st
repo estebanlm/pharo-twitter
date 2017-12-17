@@ -58,10 +58,13 @@ TwiPostStatus >> addMedia: aPostMedia [
 
 { #category : #private }
 TwiPostStatus >> addPostParametersTo: request [
+	"request formAt: 'tweet_mode' put: 'extended'."
+
 	request formAt: 'status' put: self content.
-	request formAt: 'tweet_mode' put: 'extended'.
-	mediaAttachments ifNotNil: [ 
-		request formAt: 'media_ids' put: (mediaAttachments collect: #id) asCommaString ].
+	mediaAttachments isEmptyOrNil ifFalse: [ 
+		request 
+			formAt: 'media_ids' 
+			put: (mediaAttachments collect: #mediaId) asCommaString ].
 	
 	"may or may not be present"
 	self inReplyToStatusId 
@@ -76,15 +79,19 @@ TwiPostStatus >> addPostParametersTo: request [
 		ifNotNil: [ :value | request formAt: 'long' put: value  ].
 	self placeId
 		ifNotNil: [ :value | request formAt: 'place_id' put: value  ].
-	
-	"booleans"
-	request 
-		formAt: 'auto_populate_reply_metadata' put: self isAutoPopulateReplyMetadata asString;
-		formAt: 'possibly_sensitive' put: self isPossiblySensitive asString;
-		formAt: 'trim_user' put: self isTrimUser asString;
-		formAt: 'enable_dm_commands' put: self isEnableDmCommands asString;
-		formAt: 'fail_dm_commands' put: self isFailDmCommands asString;
-		formAt: 'display_coordinates' put: self isDisplayCoordinates asString.
+	"this are booleans, but they are niled because their presence is optional "
+	self isAutoPopulateReplyMetadata 
+		ifNotNil: [ :value | request formAt: 'auto_populate_reply_metadata' put: value asString ].
+	self isPossiblySensitive
+		ifNotNil: [ 	:value | request formAt: 'possibly_sensitive' put: value asString ].
+	self isTrimUser
+		ifNotNil: [ :value | 	request formAt: 'trim_user' put: value asString ].
+	self isEnableDmCommands
+		ifNotNil: [ 	:value | request formAt: 'enable_dm_commands' put: value asString ].
+	self isFailDmCommands
+		ifNotNil: [ 	:value | request formAt: 'fail_dm_commands' put: value asString ].
+	self isDisplayCoordinates
+		ifNotNil: [ 	:value | request formAt: 'display_coordinates' put: value asString ]
 ]
 
 { #category : #converting }
@@ -158,13 +165,7 @@ TwiPostStatus >> inReplyToStatusId: anObject [
 { #category : #initialization }
 TwiPostStatus >> initialize [
 	super initialize.
-	json := Dictionary new.
-	self autoPopulateReplyMetadata: false.
-	self possiblySensitive: false.
-	self trimUser: false.
-	self enableDmCommands: false.
-	self failDmCommands: true.
-	self displayCoordinates: false
+	json := Dictionary new
 ]
 
 { #category : #'accessing api' }
@@ -293,6 +294,11 @@ TwiPostStatus >> post [
 	"First try to collect post medias" 
 	self medias ifNotNil: [ self uploadMedias ].
 	"then actually post (and answer a status)"
+	^ self postStatus
+]
+
+{ #category : #api }
+TwiPostStatus >> postStatus [
 	^ TwiStatus
 		login: self login
 		json: (self login 

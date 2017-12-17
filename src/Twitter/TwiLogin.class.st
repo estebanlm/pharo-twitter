@@ -41,12 +41,17 @@ TwiLogin class >> new [
 ]
 
 { #category : #accessing }
-TwiLogin class >> twitterUrl [
+TwiLogin class >> urlOAuth [
+	^ 'https://api.twitter.com/oauth' asZnUrl
+]
+
+{ #category : #accessing }
+TwiLogin class >> urlTwitterAPI [
 	^ 'https://api.twitter.com/1.1' asZnUrl
 ]
 
 { #category : #accessing }
-TwiLogin class >> uploadUrl [
+TwiLogin class >> urlUpload [
 	^ 'https://upload.twitter.com/1.1' asZnUrl
 ]
 
@@ -164,13 +169,8 @@ TwiLogin >> timelineUser: aName [
 ]
 
 { #category : #accessing }
-TwiLogin >> uploadUrl [ 
-	^ self class uploadUrl
-]
-
-{ #category : #accessing }
 TwiLogin >> url [ 
-	^ url ifNil: [ url := self class twitterUrl ]
+	^ url ifNil: [ url := self class urlTwitterAPI ]
 ]
 
 { #category : #accessing }
@@ -190,7 +190,17 @@ TwiLogin >> urlApiStatuses [
 
 { #category : #accessing }
 TwiLogin >> urlApiUploadMedia [
-	^ self uploadUrl / 'media'
+	^ self urlUpload / 'media'
+]
+
+{ #category : #accessing }
+TwiLogin >> urlOAuth [ 
+	^ self class urlOAuth
+]
+
+{ #category : #accessing }
+TwiLogin >> urlUpload [ 
+	^ self class urlUpload
 ]
 
 { #category : #api }

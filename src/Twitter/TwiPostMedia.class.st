@@ -66,7 +66,7 @@ TwiPostMedia >> reference: anObject [
 
 { #category : #api }
 TwiPostMedia >> upload [
-	^ TwiMedia json: (self login 
+	^ TwiMediaAttachment json: (self login 
 		post: self login urlApiUploadMedia / 'upload.json'
 		with: [ :request |
 			request addPart: (ZnMimePart 

@@ -11,3 +11,33 @@ Class {
 TwiMultiPostStatus class >> isValidFor: aString [
 	^ aString size > self postMaxSize
 ]
+
+{ #category : #api }
+TwiMultiPostStatus >> post [
+	| statuses savedMedias |
+	statuses := self content splitFullWordsWithLimit: self class postMaxSize - 5.
+	savedMedias := self medias.
+	self medias: nil.
+	statuses allButLastDo: [ :each | 
+		self content: each.
+		super post ]
+		
+]
+
+{ #category : #api }
+TwiMultiPostStatus >> postStatus [
+	| statuses savedMedias |
+	
+	savedMedias := mediaAttachments.
+	mediaAttachments := nil.
+	statuses := self content splitFullWordsWithLimit: self class postMaxSize - 6.
+
+	"first I post all status without media"
+	statuses allButLast withIndexDo: [ :each :index | 
+		self content: each, (' ({1}/{2})' format: { index. statuses size }).
+		super postStatus ].
+	"now I post final status with medias included"
+	mediaAttachments := savedMedias.
+	self content: statuses last, (' ({1}/{1})' format: { statuses size }).
+	super postStatus
+]
