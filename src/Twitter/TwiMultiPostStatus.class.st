@@ -13,18 +13,6 @@ TwiMultiPostStatus class >> isValidFor: aString [
 ]
 
 { #category : #api }
-TwiMultiPostStatus >> post [
-	| statuses savedMedias |
-	statuses := self content splitFullWordsWithLimit: self class postMaxSize - 5.
-	savedMedias := self medias.
-	self medias: nil.
-	statuses allButLastDo: [ :each | 
-		self content: each.
-		super post ]
-		
-]
-
-{ #category : #api }
 TwiMultiPostStatus >> postStatus [
 	| statuses savedMedias |
 	
