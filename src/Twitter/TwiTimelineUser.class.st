@@ -27,9 +27,14 @@ TwiTimelineUser class >> login: aLogin username: aName [
 TwiTimelineUser >> addParametersToRequest: request [
 	request 
 		queryAt: 'include_rts' put: self includeRTs; 
-		queryAt: 'include_rts' put: self includeRTs.
+		queryAt: 'exclude_replies' put: self excludeReplies.
 	self username 
 		ifNotNil: [ request queryAt: 'screen_name' put: self username ]
+]
+
+{ #category : #testing }
+TwiTimelineUser >> excludeReplies [
+	^ excludeReplies
 ]
 
 { #category : #accessing }
@@ -52,11 +57,6 @@ TwiTimelineUser >> initialize [
 	super initialize.
 	includeRTs := false.
 	excludeReplies := true
-]
-
-{ #category : #testing }
-TwiTimelineUser >> isExcludeReplies [
-	^ excludeReplies
 ]
 
 { #category : #accessing }

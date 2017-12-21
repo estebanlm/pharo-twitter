@@ -19,6 +19,11 @@ TwiTimeline class >> login: aLogin [
 	^ self new login: aLogin
 ]
 
+{ #category : #accessing }
+TwiTimeline class >> readLimit [
+	^ 40
+]
+
 { #category : #private }
 TwiTimeline >> addParametersToRequest: request [
 ]
@@ -63,9 +68,10 @@ TwiTimeline >> retrieveStatusesSince: anId [
 	^ (self login 
 		get: self url
 		with: [ :request | 
-			request queryAt: 'tweet_mode' put: 'extended'.
-			anId ifNotNil: [ 
-				request queryAt: 'since_id' put: anId ].
+			request 
+				queryAt: 'tweet_mode' put: 'extended';
+				queryAt: 'count' put: self class readLimit.
+			anId ifNotNil: [ request queryAt: 'since_id' put: anId ].
 			self addParametersToRequest: request ])
 		collect: [ :each | TwiStatus login: self login json: each ]
 ]
