@@ -21,6 +21,6 @@ BaselineOfTwitter >> zincSSO: spec [
 		configuration: 'ZincHTTPComponents'
 		with: [ 
 			spec
-				loads: #('SSO');
+				loads: #('SSO-OAuth1');
 				repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
 ]
