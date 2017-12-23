@@ -9,18 +9,23 @@ BaselineOfTwitter >> baseline: spec [
 	<baseline>
 
 	spec for: #common do: [
-		self zincSSO: spec.
+		self oauth1: spec.
 		spec package: 'Twitter' with: [ 
-			spec requires: #('ZincHTTPComponents') ] ]
+			spec requires: #('oauth1') ] ]
 
 ]
 
-{ #category : #baselines }
-BaselineOfTwitter >> zincSSO: spec [
+{ #category : #'external projects' }
+BaselineOfTwitter >> oauth1: spec [
 	spec 
-		configuration: 'ZincHTTPComponents'
+		configuration: 'NeoJSON' 
+		with: [ spec repository: 'http://mc.stfx.eu/Neo' ].
+	spec 
+		package: 'Zinc-SSO-OAuth1-Core' 
 		with: [ 
-			spec
-				loads: #('SSO-OAuth1');
-				repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main' ]
+			spec 
+				repository: 'http://mc.stfx.eu/ZincHTTPComponents';
+				requires: #('NeoJSON') ].
+
+	spec group: 'oauth1' with: #('Zinc-SSO-OAuth1-Core')
 ]
