@@ -259,3 +259,8 @@ TwiStatus >> user [
 	"The user who posted this Tweet. See User data dictionary for complete list of attributes."
 	^ TwiUser json: (self jsonAt: 'user')
 ]
+
+{ #category : #accessing }
+TwiStatus >> userName [
+	^ self user screenName
+]
