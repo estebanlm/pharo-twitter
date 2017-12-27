@@ -215,7 +215,11 @@ TwiLogin >> withResponseHandling: aBlock [
 	| response |
 	
 	response := aBlock value.
-	response isSuccess
-		ifFalse: [ TwiRequestError signalResponse: response ].
-	^ response contents
+	response isSuccess ifTrue: [ ^ response contents ].
+	
+	response isAuthenticationRequired 
+		ifTrue: [ ^ TwiAuthenticationRequiredError signalResponse: response ].
+	
+	TwiRequestError signalResponse: response.
+	
 ]
