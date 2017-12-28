@@ -60,7 +60,7 @@ TwiPostStatus >> addMedia: aPostMedia [
 TwiPostStatus >> addPostParametersTo: request [
 	"request formAt: 'tweet_mode' put: 'extended'."
 
-	request formAt: 'status' put: (self content copyReplaceAll: '?' with: '%3F').
+	request formAt: 'status' put: self content.
 	mediaAttachments isEmptyOrNil ifFalse: [ 
 		request 
 			formAt: 'media_ids' 
