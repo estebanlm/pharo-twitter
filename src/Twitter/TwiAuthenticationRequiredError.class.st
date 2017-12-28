@@ -8,6 +8,11 @@ Class {
 	#category : #Twitter
 }
 
+{ #category : #private }
+TwiAuthenticationRequiredError class >> handle: aResponse [
+	^ aResponse isAuthenticationRequired
+]
+
 { #category : #accessing }
 TwiAuthenticationRequiredError >> messageText [
 	^ '{1}: {2}' format: { self code. (self json at: 'errors') first at: 'message' }

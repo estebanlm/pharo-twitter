@@ -10,6 +10,23 @@ Class {
 	#category : #Twitter
 }
 
+{ #category : #private }
+TwiError class >> classFor: aResponse [
+	^ self allSubclasses 
+		detect: [ :each | each handle: aResponse ]
+		ifNone: [ self defaultErrorClass ]
+]
+
+{ #category : #private }
+TwiError class >> defaultErrorClass [
+	^ TwiRequestError
+]
+
+{ #category : #private }
+TwiError class >> handle: aResponse [
+	^ false
+]
+
 { #category : #signalling }
 TwiError class >> signalCode: aNumber json: jsonDictionary [
 	^ self new
@@ -20,7 +37,7 @@ TwiError class >> signalCode: aNumber json: jsonDictionary [
 
 { #category : #signalling }
 TwiError class >> signalResponse: aResponse [
-	^ self 
+	^ (self classFor: aResponse)
 		signalCode: aResponse code 
 		json: (STON fromString: aResponse contents)
 ]

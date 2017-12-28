@@ -60,7 +60,7 @@ TwiPostStatus >> addMedia: aPostMedia [
 TwiPostStatus >> addPostParametersTo: request [
 	"request formAt: 'tweet_mode' put: 'extended'."
 
-	request formAt: 'status' put: self content.
+	request formAt: 'status' put: (self content copyReplaceAll: '?' with: '%3F').
 	mediaAttachments isEmptyOrNil ifFalse: [ 
 		request 
 			formAt: 'media_ids' 
@@ -80,10 +80,10 @@ TwiPostStatus >> addPostParametersTo: request [
 	self placeId
 		ifNotNil: [ :value | request formAt: 'place_id' put: value  ].
 	"this are booleans, but they are niled because their presence is optional "
-	self isAutoPopulateReplyMetadata 
+	self isAutoPopulateReplyMetadata
 		ifNotNil: [ :value | request formAt: 'auto_populate_reply_metadata' put: value asString ].
-	self isPossiblySensitive
-		ifNotNil: [ 	:value | request formAt: 'possibly_sensitive' put: value asString ].
+	(self isPossiblySensitive notNil and: [ self isPossiblySensitive ])
+		ifTrue: [ :value | request formAt: 'possibly_sensitive' put: value asString ].
 	self isTrimUser
 		ifNotNil: [ :value | 	request formAt: 'trim_user' put: value asString ].
 	self isEnableDmCommands
