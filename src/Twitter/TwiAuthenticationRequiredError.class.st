@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #private }
-TwiAuthenticationRequiredError class >> handle: aResponse [
+TwiAuthenticationRequiredError class >> willHandle: aResponse json: jsonDictionary [
 	^ aResponse isAuthenticationRequired
 ]
 

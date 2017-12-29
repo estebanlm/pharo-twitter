@@ -11,20 +11,15 @@ Class {
 }
 
 { #category : #private }
-TwiError class >> classFor: aResponse [
+TwiError class >> classFor: aResponse json: jsonDictionary [
 	^ self allSubclasses 
-		detect: [ :each | each handle: aResponse ]
+		detect: [ :each | each willHandle: aResponse json: jsonDictionary ]
 		ifNone: [ self defaultErrorClass ]
 ]
 
 { #category : #private }
 TwiError class >> defaultErrorClass [
 	^ TwiRequestError
-]
-
-{ #category : #private }
-TwiError class >> handle: aResponse [
-	^ false
 ]
 
 { #category : #signalling }
@@ -37,9 +32,16 @@ TwiError class >> signalCode: aNumber json: jsonDictionary [
 
 { #category : #signalling }
 TwiError class >> signalResponse: aResponse [
-	^ (self classFor: aResponse)
+	| json |
+	json := STON fromString: aResponse contents.
+	^ (self classFor: aResponse json: json)
 		signalCode: aResponse code 
-		json: (STON fromString: aResponse contents)
+		json: json
+]
+
+{ #category : #private }
+TwiError class >> willHandle: aResponse json: aJson [
+	^ false
 ]
 
 { #category : #accessing }
