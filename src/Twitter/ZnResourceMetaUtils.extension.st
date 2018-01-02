@@ -7,5 +7,5 @@ ZnResourceMetaUtils class >> queryKeyValueSafeSet [
 	Furthermore, since + is interpreted as space in the query part,
 	it is unsafe as well"
 	
-	^ 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~!$''()*,;:@/'
+	^ 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~$''()*,;:/'
 ]
