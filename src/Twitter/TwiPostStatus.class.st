@@ -303,7 +303,9 @@ TwiPostStatus >> postStatus [
 		login: self login
 		json: (self login 
 			post: self login urlApiStatuses / 'update.json'
-			with: [ :request | self addPostParametersTo: request ])
+			with: [ :request | 
+				request entity: TwiApplicationFormUrlEncodedEntity new.
+				self addPostParametersTo: request ])
 ]
 
 { #category : #'accessing api' }
