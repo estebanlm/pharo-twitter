@@ -159,6 +159,12 @@ TwiLogin >> timelineHome [
 ]
 
 { #category : #api }
+TwiLogin >> timelineSearch: aString [
+
+	^ TwiTimelineSearch login: self search: aString
+]
+
+{ #category : #api }
 TwiLogin >> timelineUser [
 	^ TwiTimelineUser login: self
 ]
